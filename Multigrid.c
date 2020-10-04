@@ -6,7 +6,6 @@
 
 #define n 63
 
-
 int preencheMatriz(double **A, int k){
      
      int i,j;
@@ -115,12 +114,12 @@ int InterpolacaoRestricao(double **I21, double **I12, double *r, int k, int IR){
                            
    }
    
-  /* for(i=0; i<10; i++){                           
+   for(i=0; i<10; i++){                           
            printf("\n");
            for(j=0;j<(10-1)/2;j++){
                                    printf("%lf  ",I21[i][j]);
      }  
-   }*/
+   }
      
    for(i=0; i<(k-1) ; i++){ 
             for (j=0; j<(k-1)/2; j++){
@@ -161,81 +160,6 @@ int Correcao(double *V, double *E, int l){
     }
 }
 
-int Redimensionamento(double **A1, double **A2, double **I12, double **I21, int k){
-    
-   int i, j, m;
-   double **Aux;
-   
-        Aux = malloc(k * sizeof(double *));              
-         if(Aux == NULL){
-         printf("Erro de alocacao de memoria\n");
-         exit(1);
-        }
-
-       for(i=0; i<k; i++){
-         Aux[i] = malloc(k * sizeof(double));
-         if(Aux[i] == NULL){
-         printf("Erro de alocacao de memoria\n");
-         exit(1);
-         }
-       }
-   
-    for(i=0; i<(k-1)/2 ; i++){ 
-             for (j=0; j<(k-1); j++){
-                       Aux[i][j]=0.0;
-                       for (m=0; m<(k-1); m++){          
-                          Aux[i][j]= Aux[i][j] + I12[i][m]*A1[m][j];
-                       }
-             }     
-    }
-   
-   
-    for(i=0; i<(k-1)/2 ; i++){ 
-             for (j=0; j<(k-1)/2; j++){
-                       A2[i][j]=0.0;
-                       for (m=0; m<(k-1); m++){          
-                          A2[i][j]= A2[i][j] + Aux[i][m]*I21[m][j];
-                       }
-             }     
-    }
-   
-    
-}
-
-/*
-int alocacao1(double *V, int d){
-        
-       V = malloc(d * sizeof(double));
-       if(V == NULL){
-       printf("Erro de alocacao de memoria\n");
-       exit(1);
-       }
-   return 0;       
-}
-
-int alocacao2(double **M, int l, int c){
-       
-       int i; 
-        
-       M = malloc(l * sizeof(double *));              
-       if(M == NULL){
-       printf("Erro de alocacao de memoria\n");
-       exit(1);
-       }
-
-       for(i=0; i<l; i++){
-         M[i] = malloc(c * sizeof(double));
-         if(M[i] == NULL){
-         printf("Erro de alocacao de memoria\n");
-         exit(1);
-         }
-       }
-   
-   return 0;       
-}*/
-    
-
-
 void plotGraphic(const char *gnucommand){
     char syscommand[1024];
 
@@ -244,7 +168,7 @@ void plotGraphic(const char *gnucommand){
 }
 
 int main(void){
-     double **A1, **A2, *f, *V, *r1, *r2, *E1, *E2, **I12, **I21, somaE, Er, max, h;
+     double **A, *f, *V, *r, **I12, **I21, *E, somaE, Er, max, h;
      int i, j, k, l, cont;
      FILE  *GrafG1, *GrafG2;
      
@@ -262,39 +186,15 @@ int main(void){
     exit(EXIT_FAILURE);
   }
   
- /* alocacao2(A1, n, n);
-  alocacao2(A2, n, n);
-  alocacao2(I21, n-1, (n-1)/2);
-  alocacao2(I12, (n-1)/2, n-1);
-  alocacao1(f, n);
-  alocacao1(V1, n);
-  alocacao1(r1, n);
-  alocacao1(E1, n);
-  */
-  
-  A1 = malloc(n * sizeof(double *));              
-  if(A1 == NULL){
+  A = malloc(n * sizeof(double *));              
+  if(A == NULL){
     printf("Erro de alocacao de memoria\n");
     exit(1);
   }
 
   for(i=0; i<n; i++){
-    A1[i] = malloc(n * sizeof(double));
-    if(A1[i] == NULL){
-      printf("Erro de alocacao de memoria\n");
-      exit(1);
-    }
-  }
-  
-   A2 = malloc((n-1)/2 * sizeof(double *));              
-  if(A2 == NULL){
-    printf("Erro de alocacao de memoria\n");
-    exit(1);
-  }
-
-  for(i=0; i<(n-1)/2; i++){
-    A2[i] = malloc(n * sizeof(double));
-    if(A2[i] == NULL){
+    A[i] = malloc(n * sizeof(double));
+    if(A[i] == NULL){
       printf("Erro de alocacao de memoria\n");
       exit(1);
     }
@@ -312,60 +212,48 @@ int main(void){
     exit(1);
   }
   
-  r1 = malloc(n * sizeof(double));
-  if(r1 == NULL){
+  r = malloc(n * sizeof(double));
+  if(r == NULL){
     printf("Erro de alocacao de memoria\n");
     exit(1);
   }
   
-   r2 = malloc(n * sizeof(double));
-  if(r2 == NULL){
-    printf("Erro de alocacao de memoria\n");
-    exit(1);
-  }
-  
-  I12 = malloc((n-1)/2 * sizeof(double *));              
+  I12 = malloc((n-1) * sizeof(double *));              
   if(I12 == NULL){
     printf("Erro de alocacao de memoria\n");
     exit(1);
   }
 
   for(i=0; i<(n-1)/2; i++){
-    I12[i] = malloc(n-1 * sizeof(double));
+    I12[i] = malloc(n * sizeof(double));
     if(I12[i] == NULL){
       printf("Erro de alocacao de memoria\n");
       exit(1);
     }
   }
   
-  I21 = malloc((n-1) * sizeof(double *));              
+  I21 = malloc((n-1)/2 * sizeof(double *));              
   if(I21 == NULL){
     printf("Erro de alocacao de memoria\n");
     exit(1);
   }
 
   for(i=0; i<(n-1); i++){
-      I21[i] = malloc((n-1)/2 * sizeof(double));
+      I21[i] = malloc(n * sizeof(double));
       if(I21[i] == NULL){
          printf("Erro de alocacao de memoria\n");
          exit(1);
     }
   }
 
-  E1 = malloc(n * sizeof(double));
-  if(E1 == NULL){
-    printf("Erro de alocacao de memoria\n");
-    exit(1);
-  }
-  
-   E2 = malloc(n * sizeof(double));
-  if(E2 == NULL){
+  E = malloc(n * sizeof(double));
+  if(E == NULL){
     printf("Erro de alocacao de memoria\n");
     exit(1);
   }
                    
   
-  preencheMatriz(A1, n);
+  preencheMatriz(A, n);
   preencheVetor(V, n); 
   h=0.0;
   for(i=0; i<63; i++){
@@ -373,32 +261,29 @@ int main(void){
             h = i*1.0/(63-1);               
             fprintf(GrafG1,"%lf %lf\n", h, V[i]);
   }
-  fclose(GrafG1);
-
+  
 
   
-  for(i=0; i<(n-1)/2; i++){
-           E2[i]=0.0;
-  }
   for(i=0; i<n; i++){
+           
            f[i]=0.0;
+           E[i]=0.0;
   }
 
-            GaussSeidel(A1, f, V, 3, n);
-            Residuo(A1, V, f, r1, n);
-            Redimensionamento(A1, A2, I12, I21, n);
-            InterpolacaoRestricao(I21, I12, r1, n, 1);
-            GaussSeidel(A2, r2, E2, 3, (n-1)/2);
-            InterpolacaoRestricao(I21, I12, E2, n, 0);
-            Correcao(V, E1, n);
+            GaussSeidel(A, f, V, 3, 10);
+            Residuo(A, V, f, r, 10);
+            InterpolacaoRestricao(I21, I12, r, 10, 1);
+            GaussSeidel(A, r, E, 3, 5);
+            InterpolacaoRestricao(I21, I12, E, 10, 0);
+            Correcao(V, E, n);
   
-   for(i=0; i<n; i++){
+   for(i=0; i<63; i++){
            
             h = i*1.0/(63-1);               
             fprintf(GrafG2,"%lf %lf\n", h, V[i]);
    }
   
-  
+  fclose(GrafG1);
   fclose(GrafG2);
   
  /* free(A);
@@ -408,7 +293,7 @@ int main(void){
   free(E);
   free(I21);
   free(I12);
-  
+  */
   A=NULL;
   f=NULL;
   V=NULL;
@@ -416,13 +301,10 @@ int main(void){
   E=NULL;
   I21=NULL;
   I12=NULL;
-  */
+  
+  plotGraphic("set title 'Bigrid'; set xlabel 'h'; set ylabel 'u'; set xrange [0:1]; set yrange [-2:2]; plot 'GrafG1.txt' title 'Sem ajustamento' lt 1 w lp; pause 100");
   
   
-   plotGraphic("set title 'Bigrid'; set xlabel 'nh'; set ylabel 'v'; set xrange [0:1]; set yrange [-2:2]; plot 'GrafG1.txt' title 'Sem ajustamento' lt 1 w lp,\ 'GrafG2.txt' title 'Com ajustamento' lt 2 w lp; pause 100");
-  
-  
- scanf("%d",i); 
 return 0;
 }  
 
