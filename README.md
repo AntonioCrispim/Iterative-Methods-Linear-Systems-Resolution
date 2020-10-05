@@ -1,2 +1,2 @@
-# Iterative-Methods-Linear-Systems-Resolution
-Methods of resolution of linear systems and bigrid optimization, and some other codes
+#mathematics-physics-codes
+Methods of resolution of linear systems, bigrid optimization, and some other codes of quantum information
